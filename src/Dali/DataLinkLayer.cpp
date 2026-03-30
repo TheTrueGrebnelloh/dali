@@ -87,7 +87,21 @@ namespace Dali
         processReceive();
         processTransmit();
         _txTransmitter->process();
+        checkBusFail();
     };
+
+    void DataLinkLayer::checkBusFail() {
+        if (!gpio_get(_rxReceiver->pin())) {
+            _errorTime = millis();
+        } else if (_errorTime != 0 && millis() - _errorTime > 550) {
+            _errorTime = 0;
+            Frame rxFrame;
+            rxFrame.flags = DALI_BUS_FAIL;
+            for (std::function<void(Frame)> &callback : _callbackMonitors) {
+                callback(rxFrame);
+            }
+        }
+    }
 
     void DataLinkLayer::processReceive()
     {

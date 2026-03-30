@@ -26,6 +26,7 @@ namespace Dali
         bool _nextResponse = false;
         unsigned long _nextResponseTimer = 0;
         unsigned long _lastFrameReceived = 0;
+        unsigned long _errorTime;
 
         void processReceive();
         void processTransmit();
@@ -39,6 +40,7 @@ namespace Dali
         bool receiving();
         bool transmitting();
         bool busy();
+        void checkBusFail();
         unsigned long &lastFrameReceived();
         bool connected();
         size_t transmitQueueSize();
